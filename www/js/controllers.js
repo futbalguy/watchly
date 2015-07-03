@@ -133,25 +133,6 @@ angular.module('watchly.controllers', ['watchly.services', 'ngFileUpload', 'ngCo
     $scope.mapBounds.maxLon = northEastBound.F;
   };
 
-  google.maps.event.addDomListener(window, 'load', initialize);
-
-  $scope.incidentTypes = [];
-  $scope.incidentTypeNames = {};
-  $scope.incidents = {};
-  $scope.renderedIncidents = {};
-  $scope.mapBounds = {};
-  $scope.currentIncident;
-
-  $scope.setMapBounds = function() {
-    var bounds = $scope.map.getBounds();
-    var northEastBound = bounds.getNorthEast();
-    var southWestBound = bounds.getSouthWest();
-    $scope.mapBounds.minLat = southWestBound.A;
-    $scope.mapBounds.maxLat = northEastBound.A;
-    $scope.mapBounds.minLon = southWestBound.F;
-    $scope.mapBounds.maxLon = northEastBound.F;
-  };
-
   $scope.getIncidents = function() {
     Incidents.getAllIncidents().then(function(result) {
       result[0].forEach(function(incident) {
@@ -219,7 +200,7 @@ angular.module('watchly.controllers', ['watchly.services', 'ngFileUpload', 'ngCo
 
     var incidentInfoWindow;
 
-    google.maps.event.addListener(incident, 'click', function() {
+    google.maps.event.addListener(incident, 'mousedown', function() {
       $scope.currentIncident = incidentObj;
       $scope.currentIncident.date = $scope.currentIncident.occurred_at.slice(0, 10);
       $scope.currentIncident.time = $scope.currentIncident.occurred_at.slice(11, 19);
@@ -318,6 +299,12 @@ angular.module('watchly.controllers', ['watchly.services', 'ngFileUpload', 'ngCo
   $scope.newIncidentMarker;
 
   $scope.placeMarker = function(location) {
+    console.log('place marker')
+    console.log('user auth: ',Auth.isAuthenticated())
+    if (!Auth.isAuthenticated()) {
+      $scope.openSignInModal();
+      return;
+    }
 
     if (!$scope.newIncidentMarker) {
       $scope.newIncidentMarker = new google.maps.Marker({
@@ -617,7 +604,7 @@ angular.module('watchly.controllers', ['watchly.services', 'ngFileUpload', 'ngCo
   };
 
   $scope.openSignUpModal = function() {
-    $scope.signUpModal.show();
+      $scope.signUpModal.show();
   };
 
   $scope.closeSignUpModal = function() {
