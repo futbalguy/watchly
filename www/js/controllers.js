@@ -384,6 +384,9 @@ angular.module('watchly.controllers', ['watchly.services', 'ngFileUpload', 'ngCo
     dbIncident.description = incident.description;
     dbIncident.incidentTypeId = $scope.incidentTypeNames[incident.type];
 
+    console.log('cur date: ',incident.curDate);
+    console.log('cur time: ',incident.curTime);
+
     if (incident.curDate === "") {
       incident.curDate = new Date();
     }
@@ -411,9 +414,24 @@ angular.module('watchly.controllers', ['watchly.services', 'ngFileUpload', 'ngCo
         }
 
         for(var index in $scope.newIncident) {
-           if ($scope.newIncident.hasOwnProperty(index)) {
-               $scope.newIncident[index] = null;
-           }
+          switch(index) {
+            case 'curDate':
+              $scope.newIncident[index] = '';
+              break;
+            case 'curTime':
+              $scope.newIncident[index] = '';
+              break;
+            case 'description':
+              $scope.newIncident[index] = '';
+              break;
+            case 'type':
+              $scope.newIncident[index] = '';
+              break;
+            default:
+              $scope.newIncident[index] = null;
+              break;
+          }
+          console.log(index, ': ', $scope.newIncident[index]);
         }
 
         $scope.removeIncident();
